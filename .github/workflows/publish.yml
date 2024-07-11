@@ -9,10 +9,13 @@ jobs:
   docker-publish:
     name: Publish to Docker Hub
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v4
       - name: Automated version bump
         uses: phips28/gh-action-bump-version@master
         id: bump
@@ -30,21 +33,24 @@ jobs:
         id: version
         env:
           version: ${{ steps.bump.outputs.newTag }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v1.2.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.6.0
+        uses: docker/setup-buildx-action@v3.4.0
       - name: Login to DockerHub
-        uses: docker/login-action@v1.12.0
+        uses: docker/login-action@v3.2.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v6.3.0
         with:
           push: true
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          # I'm only going to build for amd64 because that's all I personally need
+          # ,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          platforms: linux/amd64
           tags: |
-            dchesterton/snmp2mqtt:latest
-            dchesterton/snmp2mqtt:${{ steps.version.outputs.version }}
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
           labels: "version=${{ steps.version.outputs.version }}"
