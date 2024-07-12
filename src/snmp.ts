@@ -29,7 +29,7 @@ export declare interface Target {
 
 export class Target extends EventEmitter {
     private session: any;
-    private interval?: NodeJS.Timer;
+    private interval?: NodeJS.Timeout;
     private ending: boolean = false;
 
     public constructor(private options: TargetConfig, private log: Logger) {
