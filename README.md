@@ -2,9 +2,13 @@
 
 Expose SNMP sensors to MQTT.
 
+Fork of dchesterton/snmp2mqtt upgrading it to modern NodeJS versions and fixing bugs and annoyances.
+
 ## config.yml
 
 ```yaml
+# yaml-language-server: $schema=https://github.com/khakers/snmp2mqtt/tree/master/src/config_schema.json
+
 log: debug # Optional: debug, info, warning or error (default: info)
 
 mqtt:
@@ -72,7 +76,7 @@ version: "3"
 services:
     snmp2mqtt:
         container_name: snmp2mqtt
-        image: dchesterton/snmp2mqtt:latest
+        image: ghcr.io/khakers/snmp2mqtt:latest
         restart: unless-stopped
         volumes:
             - ./config.yml:/app/config.yml

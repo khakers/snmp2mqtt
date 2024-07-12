@@ -3,7 +3,7 @@ import betterAjvErrors from 'better-ajv-errors';
 import * as fs from "fs";
 import { JSON_SCHEMA, load } from "js-yaml";
 
-import { schema } from "./config_schema";
+import schema from "./config_schema.json";
 import { createLogger } from "./log";
 import { Config } from "./types";
 
