@@ -1,25 +1,22 @@
-FROM node:16-alpine AS base
-FROM base as builder
-
+FROM node:22-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-COPY package.json /app
-COPY yarn.lock /app
-COPY tsconfig.json /app
-COPY src /app/src
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-RUN yarn install --frozen-lockfile
-RUN yarn build
-
-RUN mv /app/node_modules /app/node_modules_dev
-RUN yarn install --frozen-lockfile --production
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
 FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+EXPOSE 8000
 STOPSIGNAL SIGINT
-WORKDIR /app
-
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/dist /app/dist
-COPY --from=builder /app/package.json /app/package.json
+ENV NODE_ENV=production
 
 CMD [ "node", "/app/dist/index.js" ]
