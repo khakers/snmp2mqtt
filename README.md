@@ -7,7 +7,7 @@ Fork of dchesterton/snmp2mqtt upgrading it to modern NodeJS versions and fixing 
 ## config.yml
 
 ```yaml
-# yaml-language-server: $schema=https://github.com/khakers/snmp2mqtt/tree/master/src/config_schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/khakers/snmp2mqtt/main/src/config_schema.json
 
 log: debug # Optional: debug, info, warning or error (default: info)
 

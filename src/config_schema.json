@@ -1,6 +1,6 @@
 {
     "$schema":"http://json-schema.org/draft-07/schema",
-    "$id":"https://github.com/khakers/snmp2mqtt/tree/master/src/config_schema.json",
+    "$id":"https://raw.githubusercontent.com/khakers/snmp2mqtt/main/src/config_schema.json",
     "type":"object",
     "definitions":{
       "target":{
